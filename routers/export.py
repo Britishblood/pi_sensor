@@ -7,7 +7,7 @@ from typing import Literal
 import pandas as pd
 import io
 
-from database import get_connection, get_aggregated_data, get_rows
+from routers.database import get_connection, get_aggregated_data, get_rows
 
 router = APIRouter()
 

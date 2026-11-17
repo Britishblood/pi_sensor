@@ -1,7 +1,7 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 import asyncio
 
-from database import get_connection, get_aggregated_data, get_latest_two
+from routers.database import get_connection, get_aggregated_data, get_latest_two
 
 from datetime import datetime, date, timedelta
 import calendar
