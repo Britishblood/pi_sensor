@@ -1,0 +1,10 @@
+ACCESS_ID = ""
+ACCESS_KEY = ""
+USERNAME = ""
+PASSWORD = ""
+ASSET_ID = ""
+DEVICE_ID = ""
+ENDPOINT = "https://openapi.tuyaeu.com" # for eu server
+USERNAME_BW = ""
+PASSWORD_BW = ""
+REMOTE_PATH = "path/to/remote"

@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+webdavclient3
+tuya-iot-py-sdk
+pandas
+pysqlite3

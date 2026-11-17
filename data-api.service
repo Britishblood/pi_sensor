@@ -1,0 +1,16 @@
+[Unit]
+Description=Raspberry Pi Sensor API
+After=network.target
+
+[Service]
+Type=simple
+User=poim
+WorkingDirectory=/home/poim/pi_sensor
+
+ExecStart=/home/poim/pi_sensor/.venv/bin/python /home/poim/pi_sensor/main.py --port 8000
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
