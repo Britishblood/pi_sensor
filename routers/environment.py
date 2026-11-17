@@ -45,9 +45,7 @@ def get_month(
     # Get daily averages from database
     # --------------------------------------------------------
 
-    conn = get_connection()
-
-    try:
+    with get_connection() as conn:
         rows = get_aggregated_data(
             conn=conn,
             device_name=device_name,
@@ -55,8 +53,6 @@ def get_month(
             end=end_date.isoformat(),
             resolution="daily"
         )
-    finally:
-        conn.close()
 
     # --------------------------------------------------------
     # Convert database results into dictionary
@@ -128,18 +124,14 @@ def get_year(
     # Get weekly averages from database
     # --------------------------------------------------------
 
-    conn = get_connection()
-
-    try:
+    with get_connection() as conn:
         rows = get_aggregated_data(
             conn=conn,
             device_name=device_name,
             start=start_date.isoformat(),
             end=end_date.isoformat(),
-            resolution="weekly"
+            resolution="daily"
         )
-    finally:
-        conn.close()
 
     # --------------------------------------------------------
     # Convert database results into dictionary
@@ -233,9 +225,7 @@ def get_day(
     # Get raw measurements from database
     # --------------------------------------------------------
 
-    conn = get_connection()
-
-    try:
+    with get_connection() as conn:
         rows = get_aggregated_data(
             conn=conn,
             device_name=device_name,
@@ -243,8 +233,6 @@ def get_day(
             end=end.isoformat(),
             resolution="raw"
         )
-    finally:
-        conn.close()
 
     # --------------------------------------------------------
     # Assign measurements to 30-minute intervals

@@ -23,6 +23,11 @@ def main():
         prefix="/environment",
         tags=["Export"],
     )
+
+    @app.get("/status")
+    def status():
+        return {"status": "ok"}
+
     uvicorn.run(app, host=args.host, port=args.port, workers=1, timeout_graceful_shutdown=5,)
 
 

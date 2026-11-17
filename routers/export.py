@@ -48,9 +48,8 @@ def export_data(
     # Retrieve measurements for all devices
     # --------------------------------------------------------
 
-    conn = get_connection()
+    with get_connection() as conn:
 
-    try:
         # Get devices available in the selected period
         device_rows = get_rows(conn, start, end)
         device_names = [row["device_name"] for row in device_rows]
@@ -74,8 +73,6 @@ def export_data(
                     "humidity": row["humidity"],
                     "battery": row["battery"],
                 })
-    finally:
-        conn.close()
 
     # --------------------------------------------------------
     # Create DataFrame
