@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from datetime import datetime
 import csv
 
-PROJECT_DIR = Path(__file__).resolve().parent
+PROJECT_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_DIR / "data"
 DB_FILE = DATA_DIR / "20260810_environment.db"
 

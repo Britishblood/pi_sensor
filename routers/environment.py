@@ -130,7 +130,7 @@ def get_year(
             device_name=device_name,
             start=start_date.isoformat(),
             end=end_date.isoformat(),
-            resolution="daily"
+            resolution="weekly"
         )
 
     # --------------------------------------------------------
