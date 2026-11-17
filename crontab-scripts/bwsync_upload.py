@@ -16,8 +16,7 @@ options = {
 try:
     client = Client(options)
 
-    path = '/home/poim/pi_sensor/data/'
-    total, used, free = shutil.disk_usage(path)
+    total, used, free = shutil.disk_usage('/')
     gigabytes = free / (2**30)
     if gigabytes < 1.0:
         # Create notification file

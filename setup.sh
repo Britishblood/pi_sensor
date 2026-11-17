@@ -29,12 +29,12 @@ else
   exit 1
 fi
 
-echo '[1/6] Installing system packages (apt)...'
+echo '[1/7] Installing system packages (apt)...'
 "${APT[@]}" update
 "${APT[@]}" install -y \
   python3-venv python3-pip
 
-echo '[2/6] Creating virtual environment...'
+echo '[2/7] Creating virtual environment...'
 if [[ ! -d .venv ]]; then
   python3 -m venv --system-site-packages .venv
 elif [[ ! -x .venv/bin/python ]]; then
@@ -49,10 +49,11 @@ else
   echo 'Using existing .venv.'
 fi
 
-echo '[3/6] Installing project pip requirements...'
+echo '[3/7] Installing project pip requirements...'
 .venv/bin/python -m pip install -r requirements.txt
 
-echo '[4/6] Checking imports...'
+
+echo '[4/7] Checking imports...'
 .venv/bin/python - <<'PY'
 import sqlite3
 import fastapi
@@ -63,7 +64,35 @@ import uvicorn
 print('OK: sqlite3, fastapi, pandas, tuya_iot, webdav3, uvicorn import successfully')
 PY
 
-echo '[5/6] Installing the service data-api.service...'
+echo '[5/7] Patching tuya_iot/openmq.py...'
+
+# Locate the installed tuya_iot package
+TUYA_PATH=$(
+    "/home/poim/pi_sensor/.venv/bin/python" -c \
+    "import tuya_iot; from pathlib import Path; print(Path(tuya_iot.__file__).parent)"
+)
+
+SOURCE_FILE="/home/poim/pi_sensor/updated_file/openmq.py"
+TARGET_FILE="$TUYA_PATH/openmq.py"
+
+# Check that replacement exists
+if [[ ! -f "$SOURCE_FILE" ]]; then
+    echo "ERROR: Replacement openmq.py not found: $SOURCE_FILE" >&2
+    exit 1
+fi
+
+# Check that installed file exists
+if [[ ! -f "$TARGET_FILE" ]]; then
+    echo "ERROR: Installed openmq.py not found: $TARGET_FILE" >&2
+    exit 1
+fi
+
+# Replace installed file
+cp "$SOURCE_FILE" "$TARGET_FILE"
+
+echo "Successfully patched $TARGET_FILE"
+
+echo '[6/7] Installing the service data-api.service...'
 sudo cp data-api.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now data-api.service
@@ -79,13 +108,13 @@ done
 
 sudo systemctl status data-api.service --no-pager
 
-echo '[6/6] Installing crontabs for scripts...'
+echo '[7/7] Installing crontabs for scripts...'
 # Cron jobs
 CRON_BWSYNC="0 8 * * 1 /home/poim/pi_sensor/.venv/bin/python /home/poim/pi_sensor/crontab-scripts/bwsync_upload.py command arg >> /home/poim/pi_sensor/crontab-scripts/cron_bwsync.log 2>&1"
 CRON_STORAGE="0 8 * * 1 /home/poim/pi_sensor/.venv/bin/python /home/poim/pi_sensor/crontab-scripts/storage_monitor.py command arg >> /home/poim/pi_sensor/crontab-scripts/cron_storage.log 2>&1"
 CRON_LOGGER="0,30 * * * * /home/poim/pi_sensor/.venv/bin/python /home/poim/pi_sensor/crontab-scripts/continuous_data_logger.py command arg >> /home/poim/pi_sensor/crontab-scripts/cron_logger.log 2>&1"
 
-# Install cron jobs for the poim user
+# Install cron jobs for the user
 # Preserve existing jobs and avoid duplicates
 EXISTING_CRON=$(sudo crontab -u poim -l 2>/dev/null || true)
 
