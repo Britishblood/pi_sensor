@@ -107,8 +107,8 @@ def get_aggregated_data(
             AVG(battery_percentage) AS battery
         FROM environment
         WHERE device_name = ?
-          AND timestamp >= ?
-          AND timestamp < ?
+          AND datetime(timestamp) >= datetime(?)
+          AND datetime(timestamp) < datetime(?)
         GROUP BY {group_expr}
         ORDER BY timestamp
     """
@@ -166,9 +166,8 @@ def get_rows(conn, start, end):
         """
         SELECT DISTINCT device_name
         FROM environment
-        WHERE timestamp >= ?
-          AND timestamp
-            < ?
+        WHERE datetime(timestamp) >= datetime(?)
+          AND datetime(timestamp) < datetime(?)
         ORDER BY device_name
         """,
         (start, end)
